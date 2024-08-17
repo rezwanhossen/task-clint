@@ -1,10 +1,13 @@
 import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../FirbaseProv/FirebaseProvider";
 import { FaGoogle } from "react-icons/fa";
 
 const Login = () => {
+  const naviget = useNavigate();
+  const location = useLocation();
+  const from = location?.state || "/";
   const { loginUser, googleLogin } = useContext(AuthContext);
   const {
     register,
@@ -16,9 +19,9 @@ const Login = () => {
     loginUser(data.email, data.password)
       .then((result) => {
         console.log(result.user);
-        // if (result.user) {
-        //   naviget(from);
-        // }
+        if (result.user) {
+          naviget(from);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -31,9 +34,9 @@ const Login = () => {
   const handelSocalLoig = (socalprov) => {
     socalprov().then((result) => {
       console.log(result.user);
-      //   if (restlt.user) {
-      //     naviget(from);
-      //   }
+      if (result.user) {
+        naviget(from);
+      }
     });
   };
   return (

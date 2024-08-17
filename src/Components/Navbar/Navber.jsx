@@ -1,17 +1,25 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import useAuth from "../Hook/useAuth";
 
 const Navber = () => {
+  const { user, logout } = useAuth();
+  console.log(user);
   const navLink = (
     <>
       <li>
-        <a>Home</a>
+        <NavLink to="/">Home</NavLink>
+      </li>
+      <li>
+        <NavLink to="/product" className="ml-3">
+          Product
+        </NavLink>
       </li>
     </>
   );
   return (
     <div>
-      <div className="navbar bg-base-100">
+      <div className="navbar bg-base-300">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -43,9 +51,18 @@ const Navber = () => {
           <ul className="menu menu-horizontal px-1">{navLink}</ul>
         </div>
         <div className="navbar-end">
-          <Link to="/login" className="btn">
+          {user ? (
+            <button onClick={logout} className=" btn">
+              logOut
+            </button>
+          ) : (
+            <Link to="/login" className="btn">
+              Login
+            </Link>
+          )}
+          {/* <Link to="/login" className="btn">
             Login
-          </Link>
+          </Link> */}
         </div>
       </div>
     </div>

@@ -2,10 +2,13 @@
 
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../FirbaseProv/FirebaseProvider";
 
 const Register = () => {
+  const naviget = useNavigate();
+
+  const from = "/";
   const { creatUser } = useContext(AuthContext);
   const {
     register,
@@ -17,6 +20,7 @@ const Register = () => {
   const onSubmit = (data) => {
     const { email, password, fullname, img } = data;
     creatUser(email, password).then((res) => {
+      naviget(from);
       console.log(res);
     });
   };

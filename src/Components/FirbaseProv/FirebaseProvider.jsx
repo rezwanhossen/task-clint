@@ -13,6 +13,7 @@ export const AuthContext = createContext(null);
 const googlepro = new GoogleAuthProvider();
 const FirebaseProvider = ({ children }) => {
   const [user, setuser] = useState(null);
+  const [lodding, setloding] = useState(true);
   //creat users
   const creatUser = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -24,6 +25,7 @@ const FirebaseProvider = ({ children }) => {
 
   // logout
   const logout = () => {
+    setuser(null);
     return signOut(auth);
   };
 
@@ -41,7 +43,7 @@ const FirebaseProvider = ({ children }) => {
     return () => unsubcrib();
   }, []);
 
-  const allValu = { user, creatUser, loginUser, googleLogin, logout };
+  const allValu = { user, creatUser, loginUser, googleLogin, logout, lodding };
   return (
     <AuthContext.Provider value={allValu}>{children}</AuthContext.Provider>
   );

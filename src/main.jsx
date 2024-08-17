@@ -8,6 +8,9 @@ import Error from "./Components/Error/Error.jsx";
 import Login from "./Components/LoginAndReg/Login.jsx";
 import FirebaseProvider from "./Components/FirbaseProv/FirebaseProvider.jsx";
 import Register from "./Components/LoginAndReg/Register.jsx";
+import Home from "./Components/Home.jsx";
+import PrivetRout from "./Components/LoginAndReg/PrivetRout.jsx";
+import Product from "./Components/Products/Product.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -16,7 +19,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: "",
+        element: <Home></Home>,
       },
       {
         path: "/login",
@@ -25,6 +28,14 @@ const router = createBrowserRouter([
       {
         path: "/reg",
         element: <Register></Register>,
+      },
+      {
+        path: "/product",
+        element: (
+          <PrivetRout>
+            <Product></Product>{" "}
+          </PrivetRout>
+        ),
       },
     ],
   },
