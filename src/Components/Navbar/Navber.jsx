@@ -4,7 +4,7 @@ import useAuth from "../Hook/useAuth";
 
 const Navber = () => {
   const { user, logout } = useAuth();
-  console.log(user);
+  // console.logs(user);
   const navLink = (
     <>
       <li>
