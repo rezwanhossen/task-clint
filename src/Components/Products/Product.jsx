@@ -1,23 +1,153 @@
 // import React, { useEffect, useState } from "react";
 import useAxiosCommon from "../Hook/useAxiosCommon";
 import { useQuery } from "@tanstack/react-query";
+import ProCard from "./ProCard";
+import { useEffect, useState } from "react";
 
 const Product = () => {
+  const [itemsPerPage, setItemsPerPage] = useState(8);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [count, setCount] = useState(0);
   const axioscommon = useAxiosCommon();
+  const [filterone, setFilterone] = useState("");
+
   const { data: product = [], isLoading } = useQuery({
-    queryKey: ["product"],
+    queryKey: ["product", currentPage, itemsPerPage, filterone],
     queryFn: async () => {
-      const { data } = await axioscommon.get("/product");
+      const { data } = await axioscommon.get(
+        `/product?page=${currentPage}&size=${itemsPerPage}&filterone=${filterone}`
+      );
       return data;
     },
   });
-  console.log(product);
+
+  useEffect(() => {
+    const getCount = async () => {
+      const { data } = await axioscommon.get(
+        `/product-count?filterone=${filterone}`
+      );
+      setCount(data.count);
+    };
+    getCount();
+  }, [filterone]);
+
   if (isLoading) return <p>Loading...</p>;
+  // console.log(count);
+  const numberOfPages = Math.ceil(count / itemsPerPage);
+
+  const pages = [...Array(numberOfPages).keys()].map((element) => element + 1);
+  //  handle pagination button
+  const handlePaginationButton = (value) => {
+    // console.log(value);
+    setCurrentPage(value);
+  };
+  const handleReset = () => {
+    setFilterone("");
+    setSort("");
+    setSearch("");
+    setSearchText("");
+  };
   return (
-    <div>
-      {product.map((item) => (
-        <p key={item._id}>{item.name}</p>
-      ))}
+    <div className=" mt-5">
+      <section className=" md:flex gap-3 p-3 bg-slate-300 rounded-md">
+        <div>
+          <form className=" flex gap-2">
+            <div>
+              <input
+                className=" p-2 border-2 rounded-md"
+                type="text"
+                name="prodName"
+                id=""
+              />
+            </div>
+            <div>
+              <input
+                className="p-2 border-2 rounded-md bg-green-500"
+                type="submit"
+                value="Search"
+              />
+            </div>
+          </form>
+        </div>
+        <div>
+          <select
+            className="select select-bordered w-full md:w-36 "
+            onChange={(e) => {
+              setFilterone(e.target.value);
+              setCurrentPage(1);
+            }}
+            name="category_name"
+            value={filterone}
+            // onChange={(e) => setCategoryFilter(e.target.value)} //}{handleCategoryFilter}
+          >
+            <option value="">All Categories</option>
+            <option value="t-shirt">t-shirt</option>
+            <option value="pant">pant</option>
+            <option value="shirt">shirt</option>
+          </select>
+        </div>
+        <div>
+          <select
+            className="select select-bordered  w-full md:w-36 "
+            // onChange={(e) => setCategoryFilter(e.target.value)} //}{handleCategoryFilter}
+          >
+            <option value="">Brand</option>
+            <option value="Levi's">Levi's</option>
+            <option value="Brax">Brax</option>
+            <option value="Nike">Nike</option>
+            <option value="Adidas">Adidas</option>
+            <option value="Puma">Puma</option>
+          </select>
+        </div>
+        <div>
+          <select
+            className="select select-bordered  w-full md:w-36 "
+            // onChange={(e) => setCategoryFilter(e.target.value)} //}{handleCategoryFilter}
+          >
+            <option value="">Price sorting</option>
+            <option value=" Low to High">Low to High</option>
+            <option value=" High to Low">High to Low</option>
+          </select>
+        </div>
+        <div>
+          <button onClick={handleReset} className="btn">
+            Reset
+          </button>
+        </div>
+      </section>
+      <div className=" grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 ">
+        {product.map((item) => (
+          <ProCard key={item._id} item={item}></ProCard>
+        ))}
+      </div>
+      {/* pagination section */}
+      <section className=" flex justify-center mt-10">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => handlePaginationButton(currentPage - 1)}
+          className=" px-4 py-2 text-gray-700 bg-slate-200 disabled:text-gray-500 capitalize  rounded-md disabled:cursor-not-allowed disabled:hover:bg-gray-200 disabled:hover:text-gray-500 hover:bg-blue-500  hover:text-white"
+        >
+          Previous
+        </button>
+        {pages.map((btnNum) => (
+          <button
+            onClick={() => handlePaginationButton(btnNum)}
+            key={btnNum}
+            className={`hidden px-4 py-2 mx-1 ${
+              currentPage === btnNum ? "bg-blue-500 text-white" : ""
+            } transition-colors duration-300 transform  rounded-md sm:inline hover:bg-blue-500  hover:text-white`}
+          >
+            {btnNum}
+          </button>
+        ))}
+        <button
+          disabled={currentPage === numberOfPages}
+          onClick={() => handlePaginationButton(currentPage + 1)}
+          className=" px-4 py-2 text-gray-700 bg-slate-200 transition-colors duration-300 transform  rounded-md hover:bg-blue-500 disabled:hover:bg-gray-200 disabled:hover:text-gray-500 hover:text-white disabled:cursor-not-allowed disabled:text-gray-500"
+        >
+          Next
+        </button>
+      </section>
     </div>
   );
 };
