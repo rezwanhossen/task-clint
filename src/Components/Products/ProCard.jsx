@@ -8,6 +8,7 @@ const ProCard = ({ item }) => {
       <img className=" h-[250px] w-full" src={product_img} alt="" />
       <h1>{product_name}</h1>
       <h2>{brand}</h2>
+      <p className=" text-[8px]">category : {category_name}</p>
       <h3 className=" text-indigo-600">Price : {price} $</h3>
     </div>
   );
